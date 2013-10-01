@@ -2,7 +2,7 @@ namespace :gedi_na_recover do
   desc 'recover NAs'
   task :recover => :environment do
     Time.zone = -3
-    Dir[ENV['ATLANTA_HOME']+'nas/*.pdf'].each do |document|
+    Dir[ENV['ATLANTA_IMPORT']+'nas/*.pdf'].each do |document|
       puts 'Converting '+document
       document = NADocument.new(document)
       document.convert
