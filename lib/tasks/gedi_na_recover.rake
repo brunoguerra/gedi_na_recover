@@ -17,8 +17,8 @@ namespace :gedi_na_recover do
       Dir['na/processing/text/*.txt'].each do |document|
         puts 'Converting '+document
         begin
-          document = NADocument.new(document)
-          document.process
+          document_converter = NADocument.new(document)
+          document_converter.process
         rescue Exception => e
           puts "error on importing #{document}"
           puts e.to_yaml
@@ -164,55 +164,63 @@ class Facepage
       @violator = {}
       @address  = {}
 
-      @block_lines[0] =~ /Destinat.rio: (.*) Endere.o Propriet.rio: (.*) CEP: ([0-9\-\.]*) ,(.*) - (.*) Cidade - UF: (.*) - (.*)/i
-      @violator[:name]    = $1
-      @address[:desc]     = $2
+      begin
+        @block_lines[0] =~ /Destinat.rio: (.*) Endere.o Propriet.rio: (.*) CEP: ([0-9\-\.]*) ,(.*) - (.*) Cidade - UF: (.*) - (.*)/i
+        @violator[:name]    = $1
+        @address[:desc]     = $2
 
-      @address[:postal]  = $3
-      @address[:number]   = $4
-      @address[:district] = $5
-      @address[:city]     = $6
-      @address[:state]    = $7
+        @address[:postal]  = $3
+        @address[:number]   = $4
+        @address[:district] = $5
+        @address[:city]     = $6
+        @address[:state]    = $7
+      rescue Exception => e
+        puts e.message
+        raise "Invalid block line: #{block_lines}."
+      end
     else
       @na         ||= {}
       @infraction ||= {}
       @vehicle    ||= {}
       @equipment  ||= {}
+      begin 
+        @block_lines[1] =~ /Emitido em: (.*)/i 
+        @na[:emission] = $1
 
-      @block_lines[1] =~ /Emitido em: (.*)/i 
-      @na[:emission] = $1
-
-      @block_lines[2] =~ /Auto de Infra..o: (S[0-9]*) Data da Infra..o: (.*) Local da Infra..o: (.*). Hora da Infra..o: (.*) Placa: (.*) Marca \/ Modelo: (.*) BASE LEGAL .* ESP.CIE: (.*) GRAVIDADE DA INFRA..O: .*/i 
-      @na[:number] = $1
-      @infraction[:date] = $2+" "
-      @equipment[:local] = $3
-      @infraction[:date] += $4
-      @vehicle[:plate] = $5
-      @vehicle[:mark_model] = $6
-      @vehicle[:specie] = $7
+        @block_lines[2] =~ /Auto de Infra..o: (S[0-9]*) Data da Infra..o: (.*) Local da Infra..o: (.*). Hora da Infra..o: (.*) Placa: (.*) Marca \/ Modelo: (.*) BASE LEGAL .* ESP.CIE: (.*) GRAVIDADE DA INFRA..O: .*/i 
+        @na[:number] = $1
+        @infraction[:date] = $2+" "
+        @equipment[:local] = $3
+        @infraction[:date] += $4
+        @vehicle[:plate] = $5
+        @vehicle[:mark_model] = $6
+        @vehicle[:specie] = $7
 
 
-      @block_lines[3] =~ /CPF \/ CNPJ do Propriet.rio: (\d*) C.d. da Infra..o: (\d*) Descri..o da Infra..o:/i 
-      @violator[:doc] = $1
-      @infraction[:code] = $2
+        @block_lines[3] =~ /CPF \/ CNPJ do Propriet.rio: (\d*) C.d. da Infra..o: (\d*) Descri..o da Infra..o:/i 
+        @violator[:doc] = $1
+        @infraction[:code] = $2
 
-      @block_lines[4] =~ /Desdobramento: (\d*)/i
-      @infraction[:variant] = $1
+        @block_lines[4] =~ /Desdobramento: (\d*)/i
+        @infraction[:variant] = $1
 
-      @block_lines[5] =~ /Vel. Considerada \(Km\/h\): (.*) Data Verifica..o do Equip.: (.*) Vel. Aferida \(Km\/h\): (.*) N. Lacre Inmetro: (.*) Cod. Equipamento: (.*) Mat. do Agente Autuador:/i
-      @infraction[:speed_legal]     = $1
-      @infraction[:speed_computed]  = $3
-      @equipment[:code]             = $5
+        @block_lines[5] =~ /Vel. Considerada \(Km\/h\): (.*) Data Verifica..o do Equip.: (.*) Vel. Aferida \(Km\/h\): (.*) N. Lacre Inmetro: (.*) Cod. Equipamento: (.*) Mat. do Agente Autuador:/i
+        @infraction[:speed_legal]     = $1
+        @infraction[:speed_computed]  = $3
+        @equipment[:code]             = $5
 
-      @block_lines[9] =~ /([0-9A-Z\-]*)/i
-      raise "Error parsing document #{@file}. Vehicle Plate not match #{@vehicle[:plate]} != #{$1}\n#{self.to_yaml}" if @vehicle[:plate] != $1
+        @block_lines[9] =~ /([0-9A-Z\-]*)/i
+        raise "Error parsing document #{@file}. Vehicle Plate not match #{@vehicle[:plate]} != #{$1}\n#{self.to_yaml}" if @vehicle[:plate] != $1
 
-      @block_lines[10] =~ /([0-9]*)/i
-      raise "Error parsing document #{@file}. Infraction Code not match #{@infraction[:code]} != #{$1}\n#{self.to_yaml}" if @infraction[:code] != $1
+        @block_lines[10] =~ /([0-9]*)/i
+        raise "Error parsing document #{@file}. Infraction Code not match #{@infraction[:code]} != #{$1}\n#{self.to_yaml}" if @infraction[:code] != $1
 
-      @block_lines[13] =~ /(S[0-9]*)/i
-      raise "Error parsing document #{@file}. NA Number not match #{@na[:number]} != #{$1}" if @na[:number] != $1
-
+        @block_lines[13] =~ /(S[0-9]*)/i
+        raise "Error parsing document #{@file}. NA Number not match #{@na[:number]} != #{$1}" if @na[:number] != $1
+      rescue Exception => e
+        puts e.message
+        raise "Invalid block line: #{block_lines}"
+      end
     end
 
   end
