@@ -229,23 +229,25 @@ class DocumentToDatabase
 
   def save
     GediMigrationViolator.transaction do
-      @violator = GediMigrationViolator.create(@decoded.violator)
+      if GediMigrationNA.where(number: @decoded.na[:number]).count==0
+        @violator = GediMigrationViolator.create(@decoded.violator)
 
-      @decoded.address[:violator_id] = @violator.id
-      @address = GediMigrationViolatorAddress.create(@decoded.address)
-      
-      @decoded.vehicle[:violator_id] = @violator.id
-      @vehicle = GediMigrationVehicle.create(@decoded.vehicle)
+        @decoded.address[:violator_id] = @violator.id
+        @address = GediMigrationViolatorAddress.create(@decoded.address)
+        
+        @decoded.vehicle[:violator_id] = @violator.id
+        @vehicle = GediMigrationVehicle.create(@decoded.vehicle)
 
-      @equipment = GediMigrationEquipment.find_by_code(@decoded.equipment[:code])
-      @equipment = GediMigrationEquipment.create(@decoded.equipment) if @equipment.nil?
+        @equipment = GediMigrationEquipment.find_by_code(@decoded.equipment[:code])
+        @equipment = GediMigrationEquipment.create(@decoded.equipment) if @equipment.nil?
 
-      @decoded.infraction[:violator_id] = @violator.id
-      @decoded.infraction[:equipment_id] = @equipment.id
-      @infraction = GediMigrationInfraction.create(@decoded.infraction)      
+        @decoded.infraction[:violator_id] = @violator.id
+        @decoded.infraction[:equipment_id] = @equipment.id
+        @infraction = GediMigrationInfraction.create(@decoded.infraction)      
 
-      @decoded.na[:infraction_id] = @infraction.id
-      @na = GediMigrationNA.create(@decoded.na)
+        @decoded.na[:infraction_id] = @infraction.id
+        @na = GediMigrationNA.create(@decoded.na)
+      end
     end
   end
 end
