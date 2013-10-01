@@ -6,6 +6,8 @@ class GediMigrationNA < ActiveRecord::Base
 
   as_enum :accept, [:not_assigned, :accepted, :rejected], :column => "status_id"
 
+  validates :number, :uniqueness => true, :presence => true
+
   attr_accessor :valid
 
   def invalid(msg)
