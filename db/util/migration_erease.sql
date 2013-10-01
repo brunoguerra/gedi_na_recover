@@ -1,0 +1,7 @@
+
+truncate table gedi_migration_equipments;
+truncate table gedi_migration_infractions;
+truncate table gedi_migration_nas;
+truncate table gedi_migration_vehicles;
+truncate table gedi_migration_violator_addresses;
+truncate table gedi_migration_violators;

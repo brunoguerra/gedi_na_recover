@@ -1,0 +1,12 @@
+# encoding: UTF-8
+
+pt-BR:
+  gedi_migration_na_recover:
+    title: "Migração por NA's"
+    accepteds: "Aprovados"
+    rejecteds: "Rejeitados"
+    not_assigned: "Não avaliados"
+  gedi_na_recover:
+    accepteds: "Aprovados"
+    rejecteds: "Rejeitados"
+    not_assigned: "Não avaliados"

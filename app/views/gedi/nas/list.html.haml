@@ -1,0 +1,54 @@
+- options = local_assigns[:options] || {}
+- options[:action_url] ||= "#"
+%table#supervision_infractions.table.table-bordered.table-striped
+  %thead
+    %tr
+      %th
+        %input{onchange: "change_all(this);", type: "checkbox"}/
+      %th= t("analysis.miniature")
+      %th
+        = order_by?("datetime")
+        = link_to t("na_recover.compare"), "?toogle_order=datetime"
+      %th{style: "width:17%;"}= t("helpers.forms.actions")
+  %tbody
+    - @nas.each do |na|
+      - if na.associated_infraction
+        - infraction = na.associated_infraction
+        %tr
+          %td
+            = check_box_tag "nas[#{na.id}]", na.id, false, class: :checkbox
+          %td
+            - image = infraction.images.all.reverse.each do |image|
+              - image_src = image.nil? ? "/assets/no_miniature.jpg" : gedi.image_path(image.id)
+              = image_tag image_src, :class=>"image_miniature", "data-zoom-image"=> image_src
+          %td= render :partial => 'compare', :locals => { :na => na, :infraction => infraction }
+
+          %td
+            .btn-group{"data-toggle" => "buttons-radio"}
+              = link_to raw('<i  class="icon-ok"></i>'), "javascript:update_na(#{na.id}, true);", :class => "btn btn-success "+(na.accepted? ? "active" : ""), :title=>"Exibir"
+              = link_to raw('<i  class="icon-remove"></i>'), "javascript:update_na(#{na.id}, false);", :class => "btn btn-danger "+(na.rejected? ? "active" : ""), :title=>"Editar"
+  
+:javascript
+  function update_na(id, accept) {
+    $.ajax({
+      method: 'POST',
+      url: "#{accept_na_path('na_id', accept: "accept_param")}".replace('na_id', id).replace('accept_param', accept)
+    }).done(function(data) {
+      if (data.success="true") {
+        displayMessage("Atualizado com sucesso!", 'na_list', 1500, 'success');
+        na_list.last_load();
+      } else {
+        displayMessage("Falha ao atualizar NA", 'na_list');
+      }
+    })
+  }
+
+  jQuery(function(){
+    $('#nas_index .list .pagination a').each(function(index,e) {
+      var a = $(e),
+          href = a.attr('href');
+      a.attr('href', 'javascript:na_list.load("'+href+'");'); 
+    });
+
+  });
+= will_paginate @nas

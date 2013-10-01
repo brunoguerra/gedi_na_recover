@@ -1,0 +1,63 @@
+:css
+  th table.table{
+    margin-bottom: 0px;
+  }
+  th table.table tbody tr{
+    font-weight: normal;
+  }
+  .table_expand{
+    display: none;
+  }
+  .resolved td{
+    background-color: #E4F5FF !important;
+  }
+  .infraction_discard{
+    margin-left: 0px;
+  }
+  .analyses_anteriores{
+    font-size: 12px;
+    font-weight: bold;
+  }
+= render :partial => "shared/guara/navbar", :locals => { title: t('gedi_migration_na_recover.title'), |
+  options: [ |
+  {name: "reload", title: t('commons.refresh'), link: "#", icon: "icon-refresh" }, |
+  {name: "accepteds", title: t('gedi_na_recover.not_assigned'), link: "javascript:na_list.load('#{list_nas_path(:status => GediMigrationNA.accepts.not_assigned )}');", icon: "icon-inbox" }, | 
+  {name: "accepteds", title: t('gedi_na_recover.accepteds'), link: "javascript:na_list.load('#{list_nas_path(:status => GediMigrationNA.accepts.accepted )}');", icon: "icon-ok" }, | 
+  {name: "rejecteds", title: t('gedi_na_recover.rejecteds'), link: "javascript:na_list.load('#{list_nas_path(:status => GediMigrationNA.accepts.rejected )}');", icon: "icon-remove" } |
+  ], :active => "" } |
+%section#nas_index{style: "padding-top:20px;"}
+  %div
+    .list
+
+= javascript_include_tag "gedi/analysis/jquery.elevate"
+= javascript_include_tag "gedi/analysis/supervision"
+
+:javascript
+  
+  var na_list = {
+    element: "#nas_index .list",
+    default_url: "#{list_nas_path(status: params[:status])}",
+    last_url: null,
+
+    load: function(url) {
+      if (this.last_url==null) this.last_url = this.default_url;
+      if (url==undefined) url = this.last_url;
+      this.last_url = url;
+      $(this.element).load(url, function(){ 
+        $('#supervision_infractions .image_miniature').elevateZoom({zoomLevel : 0.5});
+      });
+    },
+
+    last_load: function() {
+      this.load(this.last_url);
+    }
+  }
+
+
+  jQuery(function(){
+    na_list.load();
+    $('.link_reload').click(function(){
+      na_list.load();
+    })
+  });
+

@@ -1,0 +1,30 @@
+development:
+  adapter: postgresql
+  database: gedi_dev
+  username: postgres
+  password: 
+  host: localhost
+  encoding: UTF8
+  pool: 5
+  timeout: 5000
+
+test:
+    adapter: postgresql
+    database: gedi_test
+    username: postgres
+    password: 
+    host: localhost
+    encoding: UTF8
+    pool: 5
+    timeout: 5000
+
+production:
+    adapter: postgresql
+    prepared_statements: false
+    database: gedi_prod
+    username: postgres
+    password: 
+    host: localhost
+    encoding: UTF8
+    pool: 5
+    timeout: 5000

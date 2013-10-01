@@ -1,0 +1,43 @@
+%table.table.table-bordered
+  %thead
+    %tr
+      %th= link_to t("analysis.datetime_start")
+      %th
+        = order_by?("infraction_type")
+        = link_to t("analysis.infraction_type"), "?toogle_order=infraction_type"
+      %th
+        = order_by?("equipment")
+        = link_to t("analysis.equipment"), "?toogle_order=equipment"
+      %th= t('analysis.lane')
+      %th= t('analysis.speed')
+      %th= t('analysis.plate')
+  %tbody
+    %tr
+      %td= l infraction.datetime_start, :format => :compact
+      %td= infraction.infraction_type.code
+      %td= infraction.lot.local.equipment.code
+      %td= infraction.event.lane
+      %td= infraction.event.speed
+      %td= infraction.event.plate
+    %tr
+      %td= l na.infraction.date, :format => :compact
+      %td= na.infraction.code + na.infraction.variant
+      %td= na.infraction.equipment.code
+      %td= na.infraction.lane
+      %td= na.infraction.speed_computed.to_i
+      %td= na.infraction.violator.vehicle.plate
+
+%table.table.table-bordered.table-striped
+  %tbody
+    %tr
+      %td= na.infraction.violator.vehicle.mark_model
+      %td= na.infraction.violator.vehicle.specie
+
+%table.table.table-bordered.table-striped
+  %tbody
+    %tr
+      %td= infraction.lot.name
+      %td= l infraction.lot.date
+    %tr
+      %td= na.reference.split("/").last[0..-5]
+      %td= na.emission
