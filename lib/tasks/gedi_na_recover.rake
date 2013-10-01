@@ -16,8 +16,15 @@ namespace :gedi_na_recover do
       Time.zone = -3
       Dir['na/processing/text/*.txt'].each do |document|
         puts 'Converting '+document
-        document = NADocument.new(document)
-        document.process
+        begin
+          document = NADocument.new(document)
+          document.process
+        rescue Exception => e
+          puts "error on importing #{document}"
+          puts e.to_yaml
+          puts "\n\n"
+          puts e.backtrace
+        end
         break
       end
     end
