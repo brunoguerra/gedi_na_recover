@@ -176,7 +176,7 @@ class Facepage
         @address[:state]    = $7
       rescue Exception => e
         puts e.message
-        raise "Invalid block line: #{block_lines.to_yaml}."
+        raise "Invalid block line: #{@block_lines.to_yaml}."
       end
     else
       @na         ||= {}
@@ -219,7 +219,7 @@ class Facepage
         raise "Error parsing document #{@file}. NA Number not match #{@na[:number]} != #{$1}" if @na[:number] != $1
       rescue Exception => e
         puts e.message
-        raise "Invalid block line: #{block_lines.to_yaml}"
+        raise "Invalid block line: #{@block_lines.to_yaml}"
       end
     end
 
