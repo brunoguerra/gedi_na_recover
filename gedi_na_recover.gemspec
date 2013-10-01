@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "gedi"
   s.add_dependency "gedi_analysis"
+  s.add_dependency "docsplit"
   
   s.add_development_dependency 'pg', '~> 0.12.2'
   s.add_development_dependency 'rspec'

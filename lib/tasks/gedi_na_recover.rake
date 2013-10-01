@@ -1,3 +1,5 @@
+require 'docsplit'
+
 namespace :gedi_na_recover do
   desc 'recover NAs'
   task :recover => :environment do
