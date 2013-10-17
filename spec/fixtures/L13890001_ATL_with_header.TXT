@@ -1,0 +1,14 @@
+#primeira linha - Dados da Infração
+#datas AAAAMMDD
+CDat.Lav NumeExato Placa       NA        Nm DETRAN Nm Lote Dt Venc CInfInfr Dt Hor Local infracao                        UFMun IIValor       DLMCd Agente Codigo Barras                                   Cd Renainf Cd Ar 1      Cd Ar 2      
+12...-...3...-....|4...-....|..5...-....|6...-....|7...-...8...-...9...10..-...11..12..-....|....-....|....-....|....-...1314..LD17..-....|..18.19..-....|20..-....|....-....|....-....|....-....|....-...21..-....|.22..-....|...23..-....|...
+1201208301000000002HVA1787     S000000116006123456700700011201309107465201208101130Local da infracao                  FIMCE165400850,00      018019123456710493253581100020004500000020701356220000008513 0210000000002200000000000230000000000
+1201208301000000002EEE3375     S010000212006123456700700011201309107465201208101130Local da infracao                  FIMCE165400850,00      018019123456710493253581100020004500000046425756220000008513 0210000000002200000000000230000000000
+1201208301000000002QOD2199     S010000232006123456700700011201309107465201208101130Local da infracao                  FIMCE165400850,00      018019123456710493253581100020004500000029769156220000008513 0210000000002200000000000230000000000
+
+#Segunda Linha - Dados do Veículo
+CPlaca  Marca TipCorNome Proprietario                           Nome Arrendatario               Nome logradouro veiculo               NmLV Complemento              Bairro             CMunCEP     CUF
+12...-..3...-.4..5..6...-....|....-....|....-....|....-....|....7...-....|....-....|....-....|..8...-....|....-....|....-....|....-...9...-10..-....|....-....|....-11..-....|....-....12..13..-...E15
+1HVA1787071601001001PROPRIETARIO TESTER A                       ARRENDATARIO TESTER X           RUA ABCD                              12000Casa                     ALDEOTA            1389600000001CE
+1HVA1787071601001001PROPRIETARIO TESTER V                       ARRENDATARIO TESTER Y           RUA ABCD                              12000Casa                     CENTRO             1389600000001CE
+1HVA1787071601001001PROPRIETARIO TESTER Z                       ARRENDATARIO TESTER Z           RUA ABCD                              12000Casa                     JANGURUSSU         1389600000001CE

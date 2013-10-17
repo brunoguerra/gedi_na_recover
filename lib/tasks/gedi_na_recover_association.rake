@@ -36,6 +36,7 @@ module NARecover
 
         if match
           @na.update_attribute(:associated, match.id)
+          @na.create_process
         end
       end
     end

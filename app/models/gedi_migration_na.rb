@@ -22,4 +22,9 @@ class GediMigrationNA < ActiveRecord::Base
   def runtime_valid?
     @runtime_valid
   end
+
+  def create_process
+    Gedi::InfractionProcess.where(:infraction_id => self.associated).first ||
+      Gedi::InfractionProcess.create(:infraction_id => self.associated, :number => self.number)
+  end
 end

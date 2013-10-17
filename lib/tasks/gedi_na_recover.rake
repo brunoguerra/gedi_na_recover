@@ -1,10 +1,11 @@
 require 'docsplit'
+require 'fileutils'
 
 namespace :gedi_na_recover do
   desc 'recover NAs'
   task :recover => :environment do
     Time.zone = -3
-    Dir[ENV['ATLANTA_IMPORT']+'nas/*.pdf'].each do |document|
+    NADocument.nas_on_dir.each do |document|
       puts 'Converting '+document
       document = NADocument.new(document)
       document.convert
@@ -37,8 +38,17 @@ end
 ###############################################################################################################
 
 class NADocument
-
   NA_PROCESSING_PATH = 'na/processing/'
+
+  def self.nas_on_dir
+    Dir[ENV['ATLANTA_IMPORT']+'nas/*.pdf']
+  end
+
+  def self.na_completed(file)
+    file_name = file.split('/').last
+    FileUtils.makedirs ENV['ATLANTA_IMPORT']+'nas-completed/'
+    FileUtils.mv(file, ENV['ATLANTA_IMPORT']+'nas-completed/'+file_name)
+  end
 
   def initialize(document)
     @file = document
@@ -62,23 +72,34 @@ class NADocument
   end
 
   def process
-    @pages = 0
-    first = Dir[NA_PROCESSING_PATH+'text/*.txt'].first
-    first =~ /(\d*)(.txt)/i
-    doc_digit = $1
-    doc_ext   = $2
-    s_find    = doc_digit+doc_ext
-    inc       = 1
+    @na_numbers = {}
+    @pages    = 0
+    first     = Dir[NA_PROCESSING_PATH+'text/*.txt'].first
+    first     =~ /(\d*)_(\d*)(.txt)/i
+    doc_num   = $1
+    doc_digit = $2
+    doc_ext   = $3
+    s_find    = "#{doc_num}_#{doc_digit}#{doc_ext}"
 
-    while File.exist?(first.gsub(s_find, inc.to_s+doc_ext))
-      f = first.gsub(s_find, inc.to_s+doc_ext)
-      decode_page(f)
-      @facepage = !@facepage
-      @pages += 1
-      if (@pages % 2) == 0
-        process_document(@page_decoded)
+    NADocument.nas_on_dir.each do |f|
+      f =~ /(\d+)/
+      @na_numbers.merge!( { $1.to_i => f } ) 
+    end
+
+    @na_numbers.sort_by { |number, file| number }.each do |na_number, na_file|
+      inc       = 1
+      current_file = lambda { first.gsub(s_find, "#{na_number}_#{inc}#{doc_ext}") }
+      while File.exist?(current_file.call)
+        decode_page(current_file.call)
+        @facepage = !@facepage
+        @pages += 1
+        if (@pages % 2) == 0
+          process_document(@page_decoded)
+        end
+        inc += 1
       end
-      inc += 1
+      NADocument.na_completed(na_file)
+      inc = 0
     end
   end
 
@@ -94,7 +115,6 @@ class NADocument
 
   def convert_file(file)
     NADocument.extranct_text(file)
-    NADocument.extranct_images(file)
   end
 
   def self.extranct_text(file)
@@ -102,7 +122,7 @@ class NADocument
   end
 
   def self.extranct_images(file)
-    Docsplit.extract_images(file, :output => NA_PROCESSING_PATH+'images/', :size => '752x', :format => [:png, :jpg])  
+    #Docsplit.extract _ images(file, :output => NA_PROCESSING_PATH+'images/', :size => '752x', :format => [:png, :jpg])  
   end
 
   def self.split_pages(file)
@@ -160,11 +180,13 @@ class Facepage
   end
 
   def extract_fields
+
+      begin
     if @frontpage
       @violator = {}
       @address  = {}
 
-      begin
+
         @block_lines[0] =~ /Destinat.rio: (.*) Endere.o Propriet.rio: (.*) CEP: ([0-9\-\.]*) ,(.*) - (.*) Cidade - UF: (.*) - (.*)/i
         @violator[:name]    = $1
         @address[:desc]     = $2
@@ -174,16 +196,13 @@ class Facepage
         @address[:district] = $5
         @address[:city]     = $6
         @address[:state]    = $7
-      rescue Exception => e
-        puts e.message
-        raise "Invalid block line: #{@block_lines.to_yaml}."
-      end
+
     else
       @na         ||= {}
       @infraction ||= {}
       @vehicle    ||= {}
       @equipment  ||= {}
-      begin 
+      
         @block_lines[1] =~ /Emitido em: (.*)/i 
         @na[:emission] = $1
 
@@ -217,12 +236,12 @@ class Facepage
 
         @block_lines[13] =~ /(S[0-9]*)/i
         raise "Error parsing document #{@file}. NA Number not match #{@na[:number]} != #{$1}" if @na[:number] != $1
+
+    end
       rescue Exception => e
         puts e.message
-        raise "Invalid block line: #{@block_lines.to_yaml}"
+        Rails.logger.error "Invalid block line: #{print_block_line} #{@na.to_yaml} #{@infraction.to_yaml} #{@vehicle.to_yaml} #{@violator.to_yaml} #{@address.to_yaml} #{@equipment.to_yaml} \n #{e.message} \n\n #{e.backtrace}"
       end
-    end
-
   end
 
   def decode_backface(file)
@@ -230,6 +249,16 @@ class Facepage
     @frontpage = false
     clear_block
     decode
+  end
+
+  def print_block_line
+    res = ""
+    i = 0
+    @block_lines.each do |l|
+      res += "#{i} - #{l.to_yaml}"
+      i += 1
+    end
+    res
   end
 end
 
@@ -243,26 +272,30 @@ class DocumentToDatabase
   end
 
   def save
-    GediMigrationViolator.transaction do
-      if GediMigrationNA.where(number: @decoded.na[:number]).count==0
-        @violator = GediMigrationViolator.create(@decoded.violator)
+    begin
+      GediMigrationViolator.transaction do
+        if GediMigrationNA.where(number: @decoded.na[:number]).count==0
+          @violator = GediMigrationViolator.create(@decoded.violator)
 
-        @decoded.address[:violator_id] = @violator.id
-        @address = GediMigrationViolatorAddress.create(@decoded.address)
-        
-        @decoded.vehicle[:violator_id] = @violator.id
-        @vehicle = GediMigrationVehicle.create(@decoded.vehicle)
+          @decoded.address[:violator_id] = @violator.id
+          @address = GediMigrationViolatorAddress.create(@decoded.address)
+          
+          @decoded.vehicle[:violator_id] = @violator.id
+          @vehicle = GediMigrationVehicle.create(@decoded.vehicle)
 
-        @equipment = GediMigrationEquipment.find_by_code(@decoded.equipment[:code])
-        @equipment = GediMigrationEquipment.create(@decoded.equipment) if @equipment.nil?
+          @equipment = GediMigrationEquipment.find_by_code(@decoded.equipment[:code])
+          @equipment = GediMigrationEquipment.create(@decoded.equipment) if @equipment.nil?
 
-        @decoded.infraction[:violator_id] = @violator.id
-        @decoded.infraction[:equipment_id] = @equipment.id
-        @infraction = GediMigrationInfraction.create(@decoded.infraction)      
+          @decoded.infraction[:violator_id] = @violator.id
+          @decoded.infraction[:equipment_id] = @equipment.id
+          @infraction = GediMigrationInfraction.create(@decoded.infraction)      
 
-        @decoded.na[:infraction_id] = @infraction.id
-        @na = GediMigrationNA.create(@decoded.na)
+          @decoded.na[:infraction_id] = @infraction.id
+          @na = GediMigrationNA.create(@decoded.na)
+        end
       end
+    rescue Exception => e
+      Rails.logger.error  "#{e.message} \n\n #{e.backtrace}\n"
     end
   end
 end
