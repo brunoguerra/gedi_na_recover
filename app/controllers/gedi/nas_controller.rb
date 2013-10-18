@@ -9,7 +9,7 @@ module Gedi
     
     def list
       status = params[:status] || 0
-      @search = GediMigrationNA.joins(:infraction).where(status_id: status).where('associated is not null').order("#{GediMigrationInfraction.table_name}.date")
+      @search = GediMigrationNA.joins({:associated_infraction => [:processes]}, :infraction).joins('inner join gedi_infraction_process_detran_ce_multa on gedi_infraction_process_detran_ce_multa.process_id = gedi_infraction_processes.id ').where(status_id: 0).where('associated is not null').order("#{GediMigrationInfraction.table_name}.date")
       @nas = paginate @search, nil, 5
       render :layout => false
       authorize! :read, GediMigrationNA

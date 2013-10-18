@@ -12,3 +12,22 @@ CPlaca  Marca TipCorNome Proprietario                           Nome Arrendatari
 1HVA1787071601001001PROPRIETARIO TESTER A                       ARRENDATARIO TESTER X           RUA ABCD                              12000Casa                     ALDEOTA            1389600000001CE
 1HVA1787071601001001PROPRIETARIO TESTER V                       ARRENDATARIO TESTER Y           RUA ABCD                              12000Casa                     CENTRO             1389600000001CE
 1HVA1787071601001001PROPRIETARIO TESTER Z                       ARRENDATARIO TESTER Z           RUA ABCD                              12000Casa                     JANGURUSSU         1389600000001CE
+
+
+
+
+#Segunda Linha - Dados do Veículo
+CPlaca  Marca TipCorNome Proprietario                           Nome Arrendatario               Nome logradouro veiculo               NmLV Complemento              Bairro             CMunCEP     CUF
+12...-..3...-.4..5..6...-....|....-....|....-....|....-....|....7...-....|....-....|....-....|..8...-....|....-....|....-....|....-...9...-10..-....|....-....|....-11..-....|....-....12..13..-...E15
+2HYG7537002807004011JOSE AIRTON BRAGA DE ALBUQUERQUE                                            RUA PEDRO CAETANO                     00017                         NORTE              130962120000
+
+
+#PRIMEIRA LINHA REAL
+CDat.Lav NumeExato Placa       NA        Nm DETRAN Nm Lote Dt Venc CInfInfr Dt Hor Local infracao                        UFMun IIValor       DLMCd Agente Codigo Barras                                   Cd Renainf Cd Ar 1      Cd Ar 2      
+12...-...3...-....|4...-....|..5...-....|6...-....|7...-...8...-...9...10..-...11..12..-....|....-....|....-....|....-...1314..LD17..-....|..18.19..-....|20..-....|....-....|....-....|....-....|....-...21..-....|.22..-....|...23..-....|...
+12013090437344632211012088004-8S000011354007344632200604244201311287455201308250824AV. SENADOR FERNANDES TAVORA          CE1559010000000085131670000000000876500000008681043912010311283734466322100000007@@@@@@@AR@@@@@@@AR@@@@@AR@@@@
+
+#Segunda Linha - Dados do Veículo
+CPlaca  Marca TipCorNome Proprietario                           Nome Arrendatario               Nome logradouro veiculo               NmLV Complemento              Bairro             CMunCEP     CUF
+12...-..3...-.4..5..6...-....|....-....|....-....|....-....|....7...-....|....-....|....-....|..8...-....|....-....|....-....|....-...9...-10..-....|....-....|....-11..-....|....-....12..13..-...E15
+2JLH8004115720006015JOAQUIM ELEUTERIO DE SOUSA                                                  RUA DUQUE DE CAXIAS                   00145                         OUTRA BANDA        130362580000
