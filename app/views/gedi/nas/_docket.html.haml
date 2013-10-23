@@ -6,6 +6,7 @@
   - @vehicle     = @infraction.violator.vehicle
   - @local       = @infraction.lot.local
   - @equipment   = @local.equipment
+  - next fine if vehicle.nil?
   :css
     table.non-bordered th,
     table.non-bordered td {
@@ -420,7 +421,8 @@
                 = image_tag "file:///%s" % Rails.root.join("tmp", "images", "%d.jpg" % image.id), :class=>"image_responsive"
           %tr
             %td{colspan: 2}
-              %table.table.table-bordered{ cellspacing: '0px' }
+              .spaco-boleto{ style: 'height: 160px; ' }
+              %table.table.table-bordered.boleto-banco{ cellspacing: '0px' }
                 %tbody
                   %tr
                     %td
