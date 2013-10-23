@@ -6,6 +6,23 @@ namespace :gedi_na_recover do
       Time.zone = -3
       NARecover::Linkage.run
     end
+
+    namespace :link do
+      task :vehicles => :environment do
+        GediMigrationNA.joins(
+          {:associated_infraction => {:violator => :violator}}
+        ).where(
+          'gedi_infraction_violators.vehicle_id is null'
+        ).each do |na|
+          gedi_violator = na.associated_infraction.violator
+          plate = na.infraction.violator.vehicle.plate.gsub /\-/, ''
+          puts "Placa: #{plate}"
+          puts "Violator: #{gedi_violator.id}"
+          gedi_violator.vehicle = Gedi::Vehicle.where(%{plate ILIKE '#{plate}'}).first
+          gedi_violator.save
+        end
+      end
+    end
   end
 end
 

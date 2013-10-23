@@ -1,0 +1,465 @@
+- # encoding: utf-8
+- @fines.each do |fine|
+  - @multa = Gedi::InfractionProcess::DetranCeMulta.find_by_process_id fine.process.id
+  - @infraction  = fine.process.infraction
+  - @proprietary = @infraction.violator.violator
+  - @vehicle     = @infraction.violator.vehicle
+  - @local       = @infraction.lot.local
+  - @equipment   = @local.equipment
+  :css
+    table.non-bordered th,
+    table.non-bordered td {
+      border-left: 0px none #dddddd;
+    }
+
+    .table th, .table td {
+      line-height: 16px;
+      font-size: 12px;
+    }
+
+    .violator-address {
+      margin: 20px;
+      font-size: 22px;
+      line-height: 26px;
+    }
+
+    .titulo-prefeitura {
+      font-size: 20px !important;
+      line-height: 22px !important;
+      text-align: center !important;
+    }
+
+    .notificacao-titulo {
+      font-size: 28px !important;
+      font-weight: bold !important;
+      line-height: 60px !important;
+    }
+
+    .observacoes-importantes th {
+        text-align: center;
+        font-size: 20px;
+    }
+
+    .break { page-break-before: always; }
+
+    .observacoes-importantes span.content {
+      text-transform: none !important;
+    }
+    .observacoes-importantes p {
+      font-size: 16px;
+      line-height: 17px;
+      text-transform: none !important;
+    }
+    .alerta {
+      text-align: center;
+      font-size: 72px;
+      line-height: 50px;
+      margin: 40px;
+      color: black;
+      font-weight: bold;
+    }
+    .alerta .small {
+      font-size: 28px;
+      padding: 10px;
+      line-height: 32px;
+    }
+
+    table .logos td,
+    table .linha-correios td, {
+      border: 0px !important;
+    }
+  .container
+    .row-fluid.corrios-uso{style: "margin-botom: 80px; max-width: 100%;"}
+      .span12
+        %table
+          %tr
+            %td{ width: '60%' }
+              %table.table.table-bordered{ cellspacing: '0px' }
+                %tbody
+                  %tr{ style: 'display: none;' }
+                    %td{ width: '20%' }
+                    %td{ width: '20%' }
+                    %td{ width: '16%' }
+                    %td{ width: '16%' }
+                    %td{ width: '28%' }
+                  %tr
+                    %td.title{"colspan" => "5" }
+                      %b= t("gedi.analysis.warning_notify")
+                  %tr
+                    %td{"colspan" => "3"}
+                      %b= t("gedi.analysis.addressee")
+                      \:
+                      %div= @proprietary.name
+                    %td
+                      %b= t("gedi.analysis.plate")
+                      \:
+                      %div= @vehicle.plate
+                    %td
+                      %b= t("gedi.analysis.auto_infraction")
+                      \:
+                      %div= fine.process.number
+                  %tr
+                    %td{style: "width: 98%;", "colspan" => "5" }
+                      %b= t("gedi.analysis.adress_proprietary")
+                      \:
+                      %div
+                        = @proprietary.address
+                        ,
+                        = @proprietary.number 
+                        ,
+                        = @proprietary.complement 
+                        ,
+                        = @proprietary.district
+                  %tr
+                    %td{style: "width: 31%;"}
+                      = t("gedi.analysis.zip_code")
+                      \:
+                      %div
+                        = @proprietary.zip_code
+                         
+                    %td{"colspan" => "4" }
+                      = t("gedi.analysis.municipality_state")
+                      \:
+                      %div
+                        = name_or_nothing(@proprietary.city) + " - " + name_or_nothing(@proprietary.state)
+                  %tr
+                    %td{ colspan: '5'}
+                      %b Remetente:
+                      %div C.T.T.U. - COORDENADORIA DE TRÂNSITO E TRANSPORTE URBANO DE SOBRAL
+                  %tr
+                    %td{colspan: "5"}
+                      %b Endereço Remetente:
+                      %div RUA CORONEL JOSE INACIO, 820 - CENTRO
+                  %tr
+                    %td{colspan: '2'}
+                      %b CEP:
+                      %div 62010790
+                    %td{colspan: '3'}
+                      %b CIDADE - UF
+                      %div SOBRAL - CEARÁ
+                  %tr{ style: 'height: 54px;'}
+                    %td{ colspan: '3'}
+                      %b Assinatura do Recebedor:
+                      %div
+                    %td{ colspan: '2'}
+                      %b Data de Recebimento:
+                      %div
+                  %tr{ style: 'height: 54px;'}
+                    %td{ colspan: '3'}
+                      %b Ass. do funcionário ECT:
+                      %div
+                    %td{ colspan: '2'}
+                      %b Data:
+                      %div
+              %table
+                %tr
+                  %td
+                    %b LOTE:
+                    = @multa.lote
+                  %td
+                    &nbsp;&nbsp;&nbsp;
+                  %td
+                    %b DOCUMENTO:
+                    = fine.id
+            / END SPAN8
+            %td{ style: 'vertical-align: top;' }
+              %table.table.table-bordered.table-bordered{ width: '100%'}
+                %tbody
+                  %tr{ style: 'display: none;' }
+                    %td{ width: '50%' }
+                    %td{ width: '24%' }
+                    %td{ width: '36%' }
+                  %tr
+                    %th.no_border_left{ 'colspan' => '3', style: "height: 60px; min-height: 60px;"}
+                  %tr
+                    %th.title.no_border_left{ 'colspan' => '3', style: 'vertical-align: bottom; center: center;' }
+                      %h5{ style: 'text-align: center;' } USO EXCLUSIVO DOS CORREIOS
+                  %tr
+                    %th.title.no_border_left{ 'colspan' => '3', style: 'vertical-align: bottom; center: center;' }
+                      %h5{ style: 'text-align: center;' } TENTATIVAS DE ENTREGA
+                  %tr
+                    %td.field_date.no_border_left{ 'colspan' => '3', style: 'margin: 0; padding:0;' }
+                      %table.table.table-bordered.table-bordered{ width: '100%', height: '45'}
+                        %tbody
+                          %tr
+                            %td{ style: 'vertical-align: bottom; text-align: center;'}
+                              ____ /____ /____
+                            %td{ style: 'vertical-align: bottom; text-align: center;'}
+                              ____ /____ /____
+                            %td{ style: 'vertical-align: bottom; text-align: center;'}
+                              ____ /____ /____
+                  %tr
+                    %th.no_border_left{colspan: "2"}
+                      %label.checkbox
+                        %input{type: "checkbox", value: ""}/
+                        Mudou-se
+                      %label.checkbox
+                        %input{type: "checkbox", value: ""}/
+                        Desconhecido
+                      %label.checkbox
+                        %input{type: "checkbox", value: ""}/
+                        Endereço insuficiente
+                      %label.checkbox
+                        %input{type: "checkbox", value: ""}/
+                        Não existe número indicado
+                      %label.checkbox
+                        %input{type: "checkbox", value: ""}/
+                        Falecido
+                      %label.checkbox
+                        %input{type: "checkbox", value: ""}/
+                        Ausente
+                      %label.checkbox
+                        %input{type: "checkbox", value: ""}/
+                        Recusado
+                      %label.checkbox
+                        %input{type: "checkbox", value: ""}/
+                    %th{colspan: "5", style: " height: 140px; text-align: center;"}
+                      Carimbo dos  Correios
+      / END SPAN5
+    .row-fluid.carta-correio
+      .span12
+        %table.table.table-bordered
+          %tr
+            %td
+              %table.table.non-bordered.logos
+                %tr
+                  %td
+                    = image_tag "file:///%s" % Rails.root.join("tmp", "images", "prefeitura.jpg"), :class=>"image_responsive"
+                  %td.titulo-prefeitura
+                    PREFEITURA MUNICIPAL DE SOBRAL / CTTU
+                    %br
+                      %b C.T.T.U. - COORDENADORIA DE TRÂNSITO E TRANSPORTE URBANO DE SOBRAL SECRETARIA DA CIDADANIA E SEGURANÇA
+                    .notificacao-titulo
+                      NOTIFICAÇÃO DE PENALIDADE
+                  %td
+                    = image_tag "file:///%s" % Rails.root.join("tmp", "images", "orgao.jpg"), :class=>"image_responsive"
+              %table.table.non-bordered.linha-correios
+                %tr
+                  %td
+                  %td{ width: '13%' }
+                    = image_tag "file:///%s" % Rails.root.join("tmp", "images", "correios.png"), :class=>"image_responsive"
+              .violator-address
+                .name
+                  = @proprietary.name
+                .address
+                  = @proprietary.address
+                  ,
+                  = @proprietary.number 
+                  ,
+                  = @proprietary.complement 
+                  \-
+                  = @proprietary.district
+                .zip.city.state
+                  = @proprietary.zip_code
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  = name_or_nothing @proprietary.city
+                  \-
+                  = name_or_nothing @proprietary.city.state if @proprietary.city
+
+
+    .row-fluid.observacoes
+      .span12
+        %table.table.table-bordered.observacoes-importantes
+          %tr
+            %th
+              %h4 OBSERVAÇÕES IMPORTANTES
+          %tr
+            %td
+              %p
+                * A presente notificação correspondente a infração comprovada por equipamento previamente regulamentado pelo contran conforme artigo 280 do Código Brasileiro de Trânsito - C.B.T.
+                %span.content
+                  %b * Se V. Sa. não concordar com a infração objeto desta notificação, deverá entrar com recurso conforme explicações abaixo:
+                %br - O recurso deverá conter as seguintes informações obrigatórias: 
+                %br * Se dirigida ao Órgão Executivo de Trânsito da Prefeitura Municipal. RUA CORONEL JOSE INACIO, 820 - CENTRO 
+                %br * Identificação do Interessado ou de seu representante legal. Mediante procuração. 
+                %br * Domicílio do requerente. 
+                %br * Requerimento de recurso com exposição dos fatos e de seus fundamentos. 
+                %br * Data e assinatura do requerente 
+                %br * Junte cópia dos seguintes documentos: Notificação de Penalidade ou documento equivalente, Carteira Nacional de Habilitação ou outro documento de identificação quando pessoa jurídica, documento comprovando a representação. 
+                %br * Procuração quando for o caso e outros documentos que julgar necessário para melhorar a compreensão de sua defesa. Exemplo: CRLV, Boletim de ocorrência e etc. 
+                %br
+                  * LEMBRE-SE, O PRAZO PARA DAR ENTRADA No RECURSO SERÁ ATÉ O DIA:
+                  = 30.days.from_now.strftime('%d/%m/%Y')
+                %br * Para seu próprio beneficio, mantenha atualizados seus dados cadastrais junto ao DETRAN. Evite aborrecimentos futuros
+
+        %div.alerta
+          %div FISCALIZAÇÃO ELETRÔNICA
+          %br
+            %div.small
+              MUDE DE ATITUDE, IMPRUDÊNCIA NO TRÂNSITO NÃO!
+              %br Respeite as Leis de Trânsito
+
+    / Pagina 1
+    .row-fluid.pagina-infracao.break{style: "margin-botom: 80px;"}
+      .span12
+        %div{ style: 'width: 100%; height: 400px; content: ""' }
+        .information
+          %span{style: "float:right;"}
+            Emitido em: #{Time.now.strftime("%d/%m/%Y")}
+          %p Prezado Sr.(a)
+          %p
+            %b.uppcase= @proprietary.name
+          Em Cumprimento ao disposto no inciso II,
+          parágrafo único, do Artigo 281 da Lei nº 9.503,
+          de 23/09/1997 (Código de Trânsito Brasileiro),
+          alterado pela Lei nº 9.602 de 21/01/1998,
+          notificamos V. Sa. da lavratura de Auto de Infração à Legislação de Trânsito,
+          para veículo de vossa propriedade, conforme abaixo:
+      .span12
+        %table
+          %tr
+            %td
+              %table.table.table-bordered{ cellspacing: '0px' }
+                %tbody
+                  %tr
+                    %td
+                      = t("gedi.analysis.auto_infraction")
+                      %div= fine.process.number
+                    %td{colspan: "3"}
+                      = t("gedi.analysis.locale_infraction")
+                      %div= @local.description
+                    %td
+                      = t("gedi.analysis.municipality_state_infraction")
+                      %div= name_or_nothing(@local.city) + " - " + name_or_nothing(@local.city.state)
+                  %tr
+                    %th{style: "width: 18%;"}
+                      = t("gedi.analysis.date_infraction")
+                      %div= @infraction.datetime_start.strftime("%d/%m/%Y")
+                    %th{style: "width: 18%;"}
+                      = t("gedi.analysis.hour_infraction")
+                      %div= @infraction.datetime_start.strftime("%H:%M:%S")
+                    %th{style: "width: 12%;"}
+                      = t("gedi.analysis.plate")
+                      %div= @vehicle.plate
+                    %th{style: "width: 28%;"}
+                      = t("gedi.analysis.municipality_state")
+                      %div
+                        = name_or_nothing(@proprietary.city) + " - " + name_or_nothing(@proprietary.city.state)
+                         
+                    %th{style: "width: 16%;"}
+                      = t("gedi.analysis.country")
+                      %div
+                        Brasil
+                        - #@proprietary.country
+                         
+                  %tr
+                    %th
+                      = t("gedi.analysis.cpf_cnpj_proprietary")
+                      %div
+                        = @proprietary.cpf_cnpj
+                         
+                    %th{colspan: "4"}
+                      %b= t("gedi.analysis.mark_model")
+                      %div
+                        = @vehicle.mark_model.name
+                         
+                  %tr
+                    %th
+                      = t("gedi.analysis.code_infraction")
+                      %div= detran_infraction_code @infraction.infraction_type.code
+                    %th
+                      = t("gedi.analysis.outspread")
+                      %div= detran_infraction_desdobramento @infraction.infraction_type.code
+                    %th
+                      = t("gedi.analysis.legal_basis_ctb")
+                      %div= @infraction.infraction_type.legal_code
+                    %th
+                      = t("gedi.analysis.score_cnh")
+                      %div= @infraction.infraction_type.score
+                    %th
+                      = t("gedi.analysis.gravity_infraction")
+                      %div= @infraction.infraction_type.gravity
+                  %tr
+                    %th{colspan: "5"}
+                      = t("gedi.analysis.description_infraction")
+                      %div
+                        = @infraction.infraction_type.description
+                         
+                  %tr
+                    %th
+                      = t("gedi.analysis.speed_limit_km")
+                      %div= @infraction.event.speed
+                    %th{colspan: "2"}
+                      = t("gedi.analysis.speed_considered_km")
+                      %div= @local.lanes.first.speed_cut
+                    %th
+                      = t("gedi.analysis.speed_measured_km")
+                      %div= @local.lanes.first.speed_max
+                    %th
+                      = t("gedi.analysis.code_equipment")
+                      %div= @infraction.equipment.code
+                  %tr
+                    %th{colspan: "3"}
+                      = t("gedi.analysis.description_equipment")
+                      %div= @equipment.description
+                    %th
+                      = t("gedi.analysis.date_verification_equipment")
+                      %div= @local.lanes.first.certification_expiration.strftime('%d/%m/%Y') unless @local.lanes.first.certification_expiration.nil?
+                    %th
+                      = t("gedi.analysis.n_seal_inmetro")
+                      %div= @local.lanes.first.certification
+                  %tr
+                    %th
+                      = t("gedi.analysis.code_organ_actuator")
+                      %div 215590
+                    %th{ colspan: "3" }
+                      = t("gedi.analysis.observation")
+                      %div
+                    %th
+                      = t("gedi.analysis.mat_agent_actuator")
+                      %div 8117
+                  %tr
+                    %th{colspan: "4"}
+                      = t("gedi.analysis.name_organ_actuator")
+                      %div C.T.T.U. - COORDENADORIA DE TRÂNSITO E TRANSPORTE URBANO DE SOBRAL 
+                    %th
+                      = t("gedi.analysis.code_renainf")
+                      %div= @multa.codigo_renainf if @multa.codigo_renainf > 0
+            %td{ style: 'vertical-align: top;', width: '28%' }
+              - @infraction.images.each do |image|
+                = image_tag "file:///%s" % Rails.root.join("tmp", "images", "%d.jpg" % image.id), :class=>"image_responsive"
+          %tr
+            %td{colspan: 2}
+              %table.table.table-bordered{ cellspacing: '0px' }
+                %tbody
+                  %tr
+                    %td
+                      %table{ width: '100%'}
+                        %tr
+                          %td{ width: '20%' }
+                            = image_tag "file:///%s" % Rails.root.join("tmp", "images", "caixa.jpg"), :class=>"image_responsive"
+                          %td
+                            %small Cedente
+                            %h5 PAGÁVEL APENAS NAS CASAS LOTÉRICAS E AGENCIAS DA CAIXA
+                          
+                  %tr
+                    %td
+                      %table
+                        %tr
+                          %td
+                            %small cedente
+                            %div C.T.T.U. - COORDENADORIA DE TRÂNSITO E TRANSPORTE URBANO DE SOBRAL - 07598634000137
+                          %td{ width: '20%' }
+                            %small Vencimento
+                            %div= @multa.infracao_validade.strftime('%d/%m/%Y')
+                        %tr
+                          %td{rowspan: 2}
+                            %small Observações
+                            %div
+                              ATÉ O VENCIMENTO CONCEDER DESCONTO DE 20% CONFORME O ARTIGO 284 DO CÓDIGO BRASILEIRO DE TRÂNSITO - C.T.B
+                              Nos casos de processos de Licenciamento ou Transferência esta notificação deverá ser obrigatoriamente quitada. 
+                          %td
+                            %small Valor
+                            %div= number_to_currency fine.value
+                        %tr
+                          %td
+                            %small Valor com desconto
+                            %div= number_to_currency fine.value_discount
+                  %tr
+
+                  %tr
+                    %td
+                      %h4= fine_barcode_to_read fine.docket_number
+                      %img{width: "500", style: "max-width: none;", src: "data:image/svg+xml;base64,#{Base64.encode64(fines_barcode(fine.docket_number).to_svg)}" }
+
+    .break

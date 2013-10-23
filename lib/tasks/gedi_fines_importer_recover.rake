@@ -46,7 +46,7 @@ namespace :gedi_na_recover do
             
             # move files
             move_files query_file, import_result
-            
+
             if (importer.successful?)
               puts "Importado com sucess: #{query_file}"
               @execution.add_successful_file(query_file)
@@ -57,6 +57,11 @@ namespace :gedi_na_recover do
               result = false
             end
           end
+
+          puts "Total not founded: #{Gedi::Detran::Ce::ImplantacaoMulta::Importer.not_found} "
+
+          Rake::Task["gedi_na_recover:utils:link:vehicles"].reenable
+          Rake::Task["gedi_na_recover:utils:link:vehicles"].invoke
         rescue Exception => e
           result = false
           @execution.add_exception(e)
