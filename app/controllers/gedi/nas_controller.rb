@@ -55,7 +55,7 @@ module Gedi
       (search GediMigrationNA.accepts.accepted).all.each do |na|
         multa = Gedi::InfractionProcess::DetranCeMulta.find na.multa_id
         violator =multa.process.infraction.violator
-        next na if violator.vehicle.nil? || violator.violator.nil?
+        next if violator.vehicle.nil? || violator.violator.nil?
         @fines << (Gedi::InfractionFine.where(process_id: na.associated_infraction.processes.first.id).first || 
                    Gedi::InfractionFine.create(
                       process_id: multa.process_id,

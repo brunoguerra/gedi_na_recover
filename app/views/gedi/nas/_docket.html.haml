@@ -6,7 +6,7 @@
   - @vehicle     = @infraction.violator.vehicle
   - @local       = @infraction.lot.local
   - @equipment   = @local.equipment
-  - next fine if vehicle.nil?
+  - next if @vehicle.nil?
   :css
     table.non-bordered th,
     table.non-bordered td {
