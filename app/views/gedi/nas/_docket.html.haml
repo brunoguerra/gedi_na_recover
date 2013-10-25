@@ -69,6 +69,35 @@
     table .linha-correios td, {
       border: 0px !important;
     }
+
+    .table-bordered th, .table-bordered td {
+      border-left: 2px solid #000;
+    }
+    .table th, .table td {
+      border-top: 2px solid #000;
+    }
+
+    .table-bordered {
+      border: 2px solid #000;
+      -webkit-border-radius: 0px;
+      border-radius: 0px;
+    }
+
+    .table {
+      margin: 0px;
+    }
+
+    .table-bordered thead:last-child tr:last-child > th:first-child, .table-bordered tbody:last-child tr:last-child > td:first-child, .table-bordered tbody:last-child tr:last-child > th:first-child, .table-bordered tfoot:last-child tr:last-child > td:first-child, .table-bordered tfoot:last-child tr:last-child > th:first-child {
+      -webkit-border-bottom-left-radius: 0px;
+      -moz-border-radius-bottomleft: 0px;
+      border-bottom-left-radius: 0px;
+    }
+    
+    .table-bordered thead:first-child tr:first-child > th:first-child, .table-bordered tbody:first-child tr:first-child > td:first-child, .table-bordered tbody:first-child tr:first-child > th:first-child {
+    -webkit-border-top-left-radius: 0px;
+    -moz-border-radius-topleft: 0px;
+    border-top-left-radius: 0px;
+    }
   .container
     .row-fluid.corrios-uso{style: "margin-botom: 80px; max-width: 100%;"}
       .span12
