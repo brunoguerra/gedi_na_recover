@@ -462,6 +462,6 @@
                   %tr
                     %td
                       %h4= fine_barcode_to_read fine.docket_number
-                      %img{width: "700", style: "max-width: none;", src: "data:image/svg+xml;base64,#{Base64.encode64(fines_barcode(fine.docket_number).to_svg)}" }
+                      %img{width: "900", style: "max-width: none;", src: "data:image/svg+xml;base64,#{Base64.encode64(fines_barcode(fine.docket_number).to_svg)}" }
 
     .break

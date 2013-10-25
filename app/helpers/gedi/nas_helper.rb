@@ -1,3 +1,4 @@
+# encoding: utf-8
 module Gedi
   module NasHelper
     def order_by?(field)
@@ -6,9 +7,10 @@ module Gedi
 
     def fines_barcode(code)
       require 'barby'
-      require 'barby/barcode/code_128'
+      #require 'barby/barcode/code_128'
+      require 'barby/barcode/code_25_interleaved'
       require 'barby/outputter/svg_outputter'
-      barcode = Barby::Code128B.new(code)
+      barcode = Barby::Code25Interleaved.new(code.strip)
     end
 
     def detran_infraction_code(code)
