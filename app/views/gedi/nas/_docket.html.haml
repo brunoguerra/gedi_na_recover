@@ -6,6 +6,7 @@
   - @vehicle     = @infraction.violator.vehicle
   - @local       = @infraction.lot.local
   - @equipment   = @local.equipment
+  = @proprietary.to_yaml
   - next if @vehicle.nil?
   :css
     table.non-bordered th,
@@ -97,6 +98,14 @@
     -webkit-border-top-left-radius: 0px;
     -moz-border-radius-topleft: 0px;
     border-top-left-radius: 0px;
+    }
+
+    .valores div {
+      font-size: 16px;
+    }
+
+    .valores small {
+      font-weight: bold;
     }
   .container
     .row-fluid.corrios-uso{style: "margin-botom: 80px; max-width: 100%;"}
@@ -256,13 +265,15 @@
                   %td
                     = image_tag "file:///%s" % Rails.root.join("tmp", "images", "prefeitura.jpg"), :class=>"image_responsive"
                   %td.titulo-prefeitura
-                    PREFEITURA MUNICIPAL DE SOBRAL / CTTU
+                    PREFEITURA MUNICIPAL DE SOBRAL
                     %br
                       %b C.T.T.U. - COORDENADORIA DE TRÂNSITO E TRANSPORTE URBANO DE SOBRAL SECRETARIA DA CIDADANIA E SEGURANÇA
                     .notificacao-titulo
                       NOTIFICAÇÃO DE PENALIDADE
-                  %td
+                  %td{ style: 'text-align: center;' }
                     = image_tag "file:///%s" % Rails.root.join("tmp", "images", "orgao.jpg"), :class=>"image_responsive"
+                    COORDERNADORIA DE TRÂNSITO 
+                    %br E TRANSPORTE URBANO
               %table.table.non-bordered.linha-correios
                 %tr
                   %td
@@ -300,12 +311,12 @@
                 %span.content
                   %b * Se V. Sa. não concordar com a infração objeto desta notificação, deverá entrar com recurso conforme explicações abaixo:
                 %br - O recurso deverá conter as seguintes informações obrigatórias: 
-                %br * Se dirigida ao Órgão Executivo de Trânsito da Prefeitura Municipal. RUA CORONEL JOSE INACIO, 820 - CENTRO 
+                %br * Se dirigida ao Órgão Executivo de Trânsito da Prefeitura Municipal. CTTU - RUA CORONEL JOSE INACIO, 820 - CENTRO 
                 %br * Identificação do Interessado ou de seu representante legal. Mediante procuração. 
                 %br * Domicílio do requerente. 
                 %br * Requerimento de recurso com exposição dos fatos e de seus fundamentos. 
                 %br * Data e assinatura do requerente 
-                %br * Junte cópia dos seguintes documentos: Notificação de Penalidade ou documento equivalente, Carteira Nacional de Habilitação ou outro documento de identificação quando pessoa jurídica, documento comprovando a representação. 
+                %br * Junte cópia dos seguintes documentos: Notificação de Penalidade e (Frente e Verso) Cópia do CRLN, Carteira Nacional de Habilitação ou outro documento de identificação quando pessoa jurídica, documento comprovando a representação. 
                 %br * Procuração quando for o caso e outros documentos que julgar necessário para melhorar a compreensão de sua defesa. Exemplo: CRLV, Boletim de ocorrência e etc. 
                 %br
                   * LEMBRE-SE, O PRAZO PARA DAR ENTRADA No RECURSO SERÁ ATÉ O DIA:
@@ -322,10 +333,13 @@
     / Pagina 1
     .row-fluid.pagina-infracao.break{style: "margin-botom: 80px;"}
       .span12
-        %div{ style: 'width: 100%; height: 400px; content: ""' }
+        %div{ style: 'width: 100%; height: 250px; content: ""' }
+        %div{ style: 'text-align: center; width: 18%; height: 150px;' }
+          .image= image_tag "file:///%s" % Rails.root.join("tmp", "images", "orgao.jpg"), :class=>"image_responsive"
+          .desc
+            COORDERNADORIA DE TRÂNSITO 
+            %br E TRANSPORTE URBANO
         .information
-          %span{style: "float:right;"}
-            Emitido em: #{Time.now.strftime("%d/%m/%Y")}
           %p Prezado Sr.(a)
           %p
             %b.uppcase= @proprietary.name
@@ -373,12 +387,7 @@
                         - #@proprietary.country
                          
                   %tr
-                    %th
-                      = t("gedi.analysis.cpf_cnpj_proprietary")
-                      %div
-                        = @proprietary.cpf_cnpj
-                         
-                    %th{colspan: "4"}
+                    %th{colspan: "5"}
                       %b= t("gedi.analysis.mark_model")
                       %div
                         = @vehicle.mark_model.name
@@ -445,6 +454,7 @@
                     %th
                       = t("gedi.analysis.code_renainf")
                       %div= @multa.codigo_renainf if @multa.codigo_renainf > 0
+
             %td{ style: 'vertical-align: top;', width: '28%' }
               - @infraction.images.each do |image|
                 = image_tag "file:///%s" % Rails.root.join("tmp", "images", "%d.jpg" % image.id), :class=>"image_responsive"
@@ -460,8 +470,8 @@
                           %td{ width: '20%' }
                             = image_tag "file:///%s" % Rails.root.join("tmp", "images", "caixa.jpg"), :class=>"image_responsive"
                           %td
-                            %small Cedente
-                            %h5 PAGÁVEL APENAS NAS CASAS LOTÉRICAS E AGENCIAS DA CAIXA
+                            %small
+                            %h4 PAGÁVEL APENAS NAS CASAS LOTÉRICAS E AGENCIAS DA CAIXA
                           
                   %tr
                     %td
@@ -470,27 +480,39 @@
                           %td
                             %small cedente
                             %div C.T.T.U. - COORDENADORIA DE TRÂNSITO E TRANSPORTE URBANO DE SOBRAL - 07598634000137
-                          %td{ width: '20%' }
+                          %td.valores{ width: '20%' }
                             %small Vencimento
                             %div= @multa.infracao_validade.strftime('%d/%m/%Y')
                         %tr
-                          %td{rowspan: 2}
+                          %td{rowspan: 3}
                             %small Observações
                             %div
                               ATÉ O VENCIMENTO CONCEDER DESCONTO DE 20% CONFORME O ARTIGO 284 DO CÓDIGO BRASILEIRO DE TRÂNSITO - C.T.B
+                              %br
                               Nos casos de processos de Licenciamento ou Transferência esta notificação deverá ser obrigatoriamente quitada. 
-                          %td
+                              %br
+                              NÃO RECEBER APÓS O VECIMENTO
+                          %td.valores
                             %small Valor
                             %div= number_to_currency fine.value
                         %tr
-                          %td
+                          %td.valores
                             %small Valor com desconto
                             %div= number_to_currency fine.value_discount
+                        %tr
+                          %td.valores
+                            %small Placa / UF
+                            %div
+                              = @vehicle.plate
+                              \ / 
+                              = (@vehicle.state || Guara::State.new).acronym
                   %tr
 
                   %tr
                     %td
-                      %h4= fine_barcode_to_read fine.docket_number
+                      %h4
+                        &nbsp;&nbsp;&nbsp;
+                        = fine_barcode_to_read fine.docket_number
                       %img{width: "900", style: "max-width: none;", src: "data:image/svg+xml;base64,#{Base64.encode64(fines_barcode(fine.docket_number).to_svg)}" }
 
     .break
