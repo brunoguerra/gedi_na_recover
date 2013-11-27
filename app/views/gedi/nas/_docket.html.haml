@@ -173,21 +173,21 @@
                     %td{colspan: '2'}
                       %b CEP:
                       %div 62010790
-                    %td{colspan: '3'}
+                    %td{colspan: '3' }
                       %b CIDADE - UF
                       %div SOBRAL - CEARÁ
                   %tr{ style: 'height: 54px;'}
-                    %td{ colspan: '3'}
+                    %td{ colspan: '3' }
                       %b Assinatura do Recebedor:
                       %div
-                    %td{ colspan: '2'}
+                    %td{ colspan: '2' }
                       %b Data de Recebimento:
                       %div
                   %tr{ style: 'height: 54px;'}
-                    %td{ colspan: '3'}
-                      %b Ass. do funcionário ECT:
+                    %td{ colspan: '3' }
+                      %b Ass. do funcion&aacute;rio ECT:
                       %div
-                    %td{ colspan: '2'}
+                    %td{ colspan: '2' }
                       %b Data:
                       %div
               %table
@@ -278,7 +278,7 @@
                 %tr
                   %td
                   %td{ width: '13%' }
-                    = image_tag "file:///%s" % Rails.root.join("tmp", "images", "correios.png"), :class=>"image_responsive"
+                    
               .violator-address
                 .name
                   = @proprietary.name
@@ -316,7 +316,7 @@
                 %br * Domicílio do requerente. 
                 %br * Requerimento de recurso com exposição dos fatos e de seus fundamentos. 
                 %br * Data e assinatura do requerente 
-                %br * Junte cópia dos seguintes documentos: Notificação de Penalidade e (Frente e Verso) Cópia do CRLN, Carteira Nacional de Habilitação ou outro documento de identificação quando pessoa jurídica, documento comprovando a representação. 
+                %br * Junte cópia dos seguintes documentos: Notificação de Penalidade e (Frente e Verso) Cópia do CRLV, Carteira Nacional de Habilitação ou outro documento de identificação quando pessoa jurídica, documento comprovando a representação. 
                 %br * Procuração quando for o caso e outros documentos que julgar necessário para melhorar a compreensão de sua defesa. Exemplo: CRLV, Boletim de ocorrência e etc. 
                 %br
                   * LEMBRE-SE, O PRAZO PARA DAR ENTRADA No RECURSO SERÁ ATÉ O DIA:
@@ -417,13 +417,13 @@
                   %tr
                     %th
                       = t("gedi.analysis.speed_limit_km")
-                      %div= @infraction.event.speed
+                      %div= @infraction.event.speed.to_i
                     %th{colspan: "2"}
                       = t("gedi.analysis.speed_considered_km")
-                      %div= @local.lanes.first.speed_cut
+                      %div= @local.lanes.first.speed_cut.to_i
                     %th
                       = t("gedi.analysis.speed_measured_km")
-                      %div= @local.lanes.first.speed_max
+                      %div= @local.lanes.first.speed_max.to_i
                     %th
                       = t("gedi.analysis.code_equipment")
                       %div= @infraction.equipment.code
@@ -458,6 +458,13 @@
             %td{ style: 'vertical-align: top;', width: '28%' }
               - @infraction.images.each do |image|
                 = image_tag "file:///%s" % Rails.root.join("tmp", "images", "%d.jpg" % image.id), :class=>"image_responsive"
+          %tr
+            %td{colspan: 2}
+              = number_to_currency fine.value_discount
+              \ - 
+              = number_to_currency fine.value
+              \ - 
+              = @multa.infracao_validade.strftime('%d/%m/%Y')
           %tr
             %td{colspan: 2}
               .spaco-boleto{ style: 'height: 160px; ' }
