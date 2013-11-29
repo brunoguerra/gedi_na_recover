@@ -417,13 +417,13 @@
                   %tr
                     %th
                       = t("gedi.analysis.speed_limit_km")
-                      %div= @infraction.event.speed.to_i
+                      %div= @local.lanes.first.speed_max.to_i
                     %th{colspan: "2"}
                       = t("gedi.analysis.speed_considered_km")
-                      %div= @local.lanes.first.speed_cut.to_i
+                      %div= @infraction.event.speed.to_i > 100 ? @infraction.event.speed.to_i*0.93 : @infraction.event.speed.to_i - 7
                     %th
                       = t("gedi.analysis.speed_measured_km")
-                      %div= @local.lanes.first.speed_max.to_i
+                      %div= @infraction.event.speed.to_i
                     %th
                       = t("gedi.analysis.code_equipment")
                       %div= @infraction.equipment.code
