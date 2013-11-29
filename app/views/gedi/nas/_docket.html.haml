@@ -433,7 +433,7 @@
                       %div= @equipment.description
                     %th
                       = t("gedi.analysis.date_verification_equipment")
-                      %div= (@local.lanes.first.certification_expiration - 1.year.ago).strftime('%d/%m/%Y') unless @local.lanes.first.certification_expiration.nil?
+                      %div= Time.at(@local.lanes.first.certification_expiration - 1.year.ago).strftime('%d/%m/%Y') unless @local.lanes.first.certification_expiration.nil?
                     %th
                       = t("gedi.analysis.n_seal_inmetro")
                       %div= @local.lanes.first.certification
