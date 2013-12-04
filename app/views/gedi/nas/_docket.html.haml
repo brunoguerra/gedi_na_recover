@@ -459,14 +459,22 @@
               - @infraction.images.each do |image|
                 = image_tag "file:///%s" % Rails.root.join("tmp", "images", "%d.jpg" % image.id), :class=>"image_responsive"
           %tr
-            %td{colspan: 2}
-              = fine_barcode_to_read fine.docket_number
-              \ - 
-              = number_to_currency fine.value_discount
-              \ - 
-              = number_to_currency fine.value
-              \ - 
-              = @multa.infracao_validade.strftime('%d/%m/%Y')
+            %td{colspan: 99}
+              %table.table.table-bordered
+                %tbody
+                  %tr
+                    %th
+                      Código de Barras
+                      %div{ style: "font-size: 150%;" }= fine_barcode_to_read fine.docket_number
+                    %th{ width: "12%" }
+                      Valor
+                      %div= number_to_currency fine.value
+                    %th{ width: "12%" }
+                      Valor com desconto
+                      %div= number_to_currency fine.value_discount
+                    %th{ width: "12%" }
+                      Vencimento
+                      = @multa.infracao_validade.strftime('%d/%m/%Y')
           %tr
             %td{colspan: 2}
               .spaco-boleto{ style: 'height: 160px; ' }
@@ -474,14 +482,14 @@
                 %tbody
                   %tr
                     %td
-                      %table{ width: '100%'}
+                      %table{ width: '100%' }
                         %tr
                           %td{ width: '20%' }
                             = image_tag "file:///%s" % Rails.root.join("tmp", "images", "caixa.jpg"), :class=>"image_responsive"
                           %td
                             %small
                             %h4 PAGÁVEL APENAS NAS CASAS LOTÉRICAS E AGENCIAS DA CAIXA
-                          
+                  
                   %tr
                     %td
                       %table
