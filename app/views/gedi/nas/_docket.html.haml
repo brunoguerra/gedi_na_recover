@@ -460,6 +460,8 @@
                 = image_tag "file:///%s" % Rails.root.join("tmp", "images", "%d.jpg" % image.id), :class=>"image_responsive"
           %tr
             %td{colspan: 2}
+              = fine_barcode_to_read fine.docket_number
+              \ - 
               = number_to_currency fine.value_discount
               \ - 
               = number_to_currency fine.value

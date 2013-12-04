@@ -22,7 +22,7 @@ module Gedi
     end
 
     def fine_barcode_to_read(barcode)
-      barcode[0..11]+' '+barcode[12..23]+' '+barcode[24..35]+' '+barcode[36..47]
+      barcode[0..10]+' '+barcode[11]+' '+barcode[12..22]+' '+barcode[23]+' '+barcode[24..34]+' '+barcode[35]+' '+barcode[36..46]+' '+barcode[47]+' '
     end
 
     def fine_barcode_to_read_doc(barcode)
